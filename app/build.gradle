@@ -62,9 +62,10 @@ dependencies {
     implementation 'com.intuit.ssp:ssp-android:1.0.6'
 
     // navigation component implementation
-    implementation "androidx.navigation:navigation-fragment-ktx:2.4.1"
-    implementation "androidx.navigation:navigation-views-ktx:2.4.1"
+    implementation "androidx.navigation:navigation-fragment-ktx:2.3.5"
+    implementation "androidx.navigation:navigation-ui-ktx:2.3.5"
 
+    implementation "androidx.navigation:navigation-ui:2.3.5"
 
     //Recyclerview
     implementation("androidx.recyclerview:recyclerview:1.2.1")
