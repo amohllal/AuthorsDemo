@@ -1,4 +1,4 @@
-package com.assignment.data.model.remote
+package com.assignment.data.model.remote.author
 
 
 import com.google.gson.annotations.SerializedName

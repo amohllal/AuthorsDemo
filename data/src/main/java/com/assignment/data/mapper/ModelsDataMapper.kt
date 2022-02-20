@@ -1,10 +1,13 @@
 package com.assignment.data.mapper
 
 import com.assignment.data.model.local.AuthorsEntity
-import com.assignment.data.model.remote.AuthorsDataResponse
-import com.assignment.data.model.remote.AuthorsDataResponseItem
+import com.assignment.data.model.remote.author.AuthorsDataResponse
+import com.assignment.data.model.remote.author.AuthorsDataResponseItem
+import com.assignment.data.model.remote.posts.PostsDataResponse
 import com.assignment.domain.model.AuthorsDomainResponse
 import com.assignment.domain.model.AuthorsDomainResponseItem
+import com.assignment.domain.model.PostsDomainResponse
+import com.assignment.domain.model.PostsDomainResponseItem
 
 fun AuthorsDataResponse.mapToDomain() = AuthorsDomainResponse(this.map {
     AuthorsDomainResponseItem(
@@ -13,6 +16,15 @@ fun AuthorsDataResponse.mapToDomain() = AuthorsDomainResponse(this.map {
         id = it.id,
         userName = it.userName,
         email = it.email
+    )
+})
+
+fun PostsDataResponse.mapToDomain() = PostsDomainResponse(this.map {
+    PostsDomainResponseItem(
+        date = it.date,
+        imageUrl = it.imageUrl,
+        title = it.title,
+        body = it.body
     )
 })
 

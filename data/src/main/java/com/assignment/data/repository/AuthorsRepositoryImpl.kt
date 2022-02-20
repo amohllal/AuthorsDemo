@@ -4,7 +4,7 @@ import com.assignment.data.local.AuthorDAO
 import com.assignment.data.mapper.mapToDomain
 import com.assignment.data.mapper.mapToEntity
 import com.assignment.data.mapper.mapToRemoteResponse
-import com.assignment.data.model.remote.AuthorsDataResponse
+import com.assignment.data.model.remote.author.AuthorsDataResponse
 import com.assignment.data.remote.AuthorAPI
 import com.assignment.domain.model.AuthorsDomainResponse
 import com.assignment.domain.model.AuthorsDomainResponseItem
