@@ -14,7 +14,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.ClientApp">
         <activity
-            android:name=".presentation.ui.views.activities.MainActivity"
+            android:name=".presentation.views.ui.activities.MainActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
