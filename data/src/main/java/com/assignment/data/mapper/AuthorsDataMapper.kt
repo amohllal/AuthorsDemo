@@ -34,3 +34,19 @@ fun AuthorsDomainResponseItem.mapToEntities() =
         userName = this.userName,
         id = this.id
     )
+
+fun AuthorsDataResponseItem.mapToEntity() = AuthorsEntity(
+    avatarUrl = this.avatarUrl,
+    name = this.name,
+    userName = this.userName,
+    id = this.id
+)
+
+fun AuthorsEntity.mapToDomain() =
+    AuthorsDomainResponseItem(
+        avatarUrl = this.avatarUrl,
+        name = this.name,
+        id = this.id,
+        userName = this.userName,
+        email = this.email
+    )

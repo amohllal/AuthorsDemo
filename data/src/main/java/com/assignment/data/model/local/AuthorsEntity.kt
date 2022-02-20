@@ -13,7 +13,7 @@ data class AuthorsEntity(
     @ColumnInfo(name = "Name")
     val name: String? = null,
 
-    @PrimaryKey(autoGenerate = true)
+    @PrimaryKey
     val id: Int? = null,
 
     @ColumnInfo(name = "UserName")
