@@ -12,9 +12,10 @@ import com.bumptech.glide.Glide
 
 class AuthorRecyclerAdapter(
     private val authorList: List<AuthorsDomainResponseItem>,
-    private val listener: RecyclerViewClickListener,
-    private val context: Context
-) : RecyclerView.Adapter<AuthorRecyclerAdapter.AuthorViewHolder>() {
+    private val context: Context,
+    private val itemClick: (AuthorsDomainResponseItem) -> Unit,
+
+    ) : RecyclerView.Adapter<AuthorRecyclerAdapter.AuthorViewHolder>() {
 
     override fun getItemCount() = authorList.size
 
@@ -39,7 +40,7 @@ class AuthorRecyclerAdapter(
             .into(holder.recyclerviewMovieBinding.authorIv)
 
         holder.recyclerviewMovieBinding.root.setOnClickListener {
-            listener.onRecyclerViewItemClick(author)
+            itemClick.invoke(author)
         }
     }
 

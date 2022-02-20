@@ -5,5 +5,5 @@ import javax.inject.Inject
 
 class GetPostsListUseCase @Inject constructor(private val postsRepo: PostsRepository) {
 
-    fun getPostsForUser(userId: String) = postsRepo.getPostsForUser(userId)
+    suspend fun getPostsForUser(userId: String) = postsRepo.getPostsForUser(userId)
 }

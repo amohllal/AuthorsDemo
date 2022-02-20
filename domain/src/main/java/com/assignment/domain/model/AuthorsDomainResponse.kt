@@ -1,6 +1,7 @@
 package com.assignment.domain.model
 
 import com.google.gson.annotations.SerializedName
+import java.io.Serializable
 
 data class AuthorsDomainResponse(
 
@@ -24,4 +25,4 @@ data class AuthorsDomainResponseItem(
 
     @field:SerializedName("email")
     val email: String? = null
-)
+) : Serializable

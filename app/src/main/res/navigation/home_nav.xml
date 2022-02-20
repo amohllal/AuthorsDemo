@@ -24,5 +24,8 @@
             android:id="@+id/navigate_postsFragment_to_authorsFragment"
             app:destination="@id/authorsFragment"
             app:exitAnim="@anim/nav_default_exit_anim" />
+        <argument
+            android:name="authorData"
+            app:argType="com.assignment.domain.model.AuthorsDomainResponseItem" />
     </fragment>
 </navigation>

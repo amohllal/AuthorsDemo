@@ -54,6 +54,9 @@ dependencies {
     implementation 'io.reactivex.rxjava2:rxjava:2.2.20'
     implementation 'com.squareup.retrofit2:adapter-rxjava2:2.9.0'
 
+    //Coroutines
+    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.5.2'
+
 
     //dagger-hilt
     implementation "com.google.dagger:hilt-android:2.38.1"

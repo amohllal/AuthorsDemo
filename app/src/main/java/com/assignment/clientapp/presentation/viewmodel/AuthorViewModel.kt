@@ -1,5 +1,6 @@
 package com.assignment.clientapp.presentation.viewmodel
 
+import androidx.lifecycle.viewModelScope
 import com.assignment.clientapp.presentation.core.BaseViewModel
 import com.assignment.clientapp.presentation.core.wrapper.StateLiveData
 import com.assignment.domain.model.AuthorsDomainResponseItem
@@ -9,6 +10,10 @@ import com.assignment.domain.usecase.GetPostsListUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
+import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.onStart
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
@@ -60,21 +65,20 @@ open class AuthorViewModel @Inject constructor(
 
 
     fun getPostsForAuthor(authorId: String) {
-        compositeDisposable.add(
+
+        viewModelScope.launch {
             postsUseCase.getPostsForUser(authorId)
-                .subscribeOn(Schedulers.io())
-                .doOnSubscribe {
+                .onStart {
                     postsLiveData.postLoading()
                 }
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe({ response ->
-                    postsLiveData.postSuccess(response.postsDomainResponse)
-                },
-                    { error ->
-                        postsLiveData.postError(error)
-                        error.printStackTrace()
-                    })
-        )
+                .catch { error ->
+                    postsLiveData.postError(error)
+                }
+                .collect {
+                    postsLiveData.postSuccess(it.postsDomainResponse)
+                }
+        }
+
     }
 
 

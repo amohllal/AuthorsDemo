@@ -1,8 +1,9 @@
 package com.assignment.domain.repository
 
 import com.assignment.domain.model.PostsDomainResponse
-import io.reactivex.Single
+import kotlinx.coroutines.flow.Flow
 
 interface PostsRepository {
-    fun getPostsForUser(userId: String): Single<PostsDomainResponse>
+    suspend fun getPostsForUser(userId: String): Flow<PostsDomainResponse>
+
 }
