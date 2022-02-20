@@ -13,9 +13,9 @@ import com.bumptech.glide.Glide
 class AuthorRecyclerAdapter(
     private val authorList: List<AuthorsDomainResponseItem>,
     private val context: Context,
-    private val itemClick: (AuthorsDomainResponseItem) -> Unit,
+    private val itemClick: (AuthorsDomainResponseItem) -> Unit
 
-    ) : RecyclerView.Adapter<AuthorRecyclerAdapter.AuthorViewHolder>() {
+) : RecyclerView.Adapter<AuthorRecyclerAdapter.AuthorViewHolder>() {
 
     override fun getItemCount() = authorList.size
 
@@ -32,21 +32,21 @@ class AuthorRecyclerAdapter(
     override fun onBindViewHolder(holder: AuthorViewHolder, position: Int) {
         val author = authorList[position]
 
-        holder.recyclerviewMovieBinding.authorNameTv.text = author.name
-        holder.recyclerviewMovieBinding.authorUsernameTv.text = author.userName
-        holder.recyclerviewMovieBinding.authorEmailTv.text = author.email
+        holder.recyclerviewPostBinding.authorNameTv.text = author.name
+        holder.recyclerviewPostBinding.authorUsernameTv.text = author.userName
+        holder.recyclerviewPostBinding.authorEmailTv.text = author.email
         Glide.with(context)
             .load(author.avatarUrl)
-            .into(holder.recyclerviewMovieBinding.authorIv)
+            .into(holder.recyclerviewPostBinding.authorIv)
 
-        holder.recyclerviewMovieBinding.root.setOnClickListener {
+        holder.recyclerviewPostBinding.root.setOnClickListener {
             itemClick.invoke(author)
         }
     }
 
 
     inner class AuthorViewHolder(
-        val recyclerviewMovieBinding: AuthorItemBinding
-    ) : RecyclerView.ViewHolder(recyclerviewMovieBinding.root)
+        val recyclerviewPostBinding: AuthorItemBinding
+    ) : RecyclerView.ViewHolder(recyclerviewPostBinding.root)
 
 }

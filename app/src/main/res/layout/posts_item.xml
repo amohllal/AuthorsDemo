@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
+
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
@@ -7,8 +8,8 @@
         <import type="android.view.View" />
 
         <variable
-            name="author"
-            type="com.assignment.domain.model.AuthorsDomainResponseItem" />
+            name="post"
+            type="com.assignment.domain.model.PostsDomainResponseItem" />
     </data>
 
     <androidx.cardview.widget.CardView xmlns:card_view="http://schemas.android.com/tools"
@@ -39,10 +40,10 @@
                         style="@style/hintStyle"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Name: " />
+                        android:text="Title: " />
 
                     <TextView
-                        android:id="@+id/author_name_tv"
+                        android:id="@+id/post_title_tv"
                         style="@style/valueStyle"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -62,7 +63,7 @@
                         android:text="UserName: " />
 
                     <TextView
-                        android:id="@+id/author_username_tv"
+                        android:id="@+id/post_date_tv"
                         style="@style/valueStyle"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -82,7 +83,7 @@
                         android:text="Email: " />
 
                     <TextView
-                        android:id="@+id/author_email_tv"
+                        android:id="@+id/post_body_tv"
                         style="@style/valueStyle"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -92,7 +93,7 @@
             </LinearLayout>
 
             <ImageView
-                android:id="@+id/author_iv"
+                android:id="@+id/post_iv"
                 android:layout_width="@dimen/_80sdp"
                 android:layout_height="match_parent"
                 android:scaleType="centerCrop" />
