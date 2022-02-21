@@ -11,6 +11,7 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import com.assignment.clientapp.R
 import com.assignment.clientapp.databinding.FragmentPostsBinding
+import com.assignment.clientapp.presentation.core.BaseApplication
 import com.assignment.clientapp.presentation.core.Connectivity
 import com.assignment.clientapp.presentation.core.loadPostsListFromDataStore
 import com.assignment.clientapp.presentation.core.wrapper.DataStatus
@@ -29,7 +30,7 @@ import kotlinx.coroutines.launch
 class PostsFragment : Fragment() {
 
     private lateinit var authorModel: AuthorsDomainResponseItem
-    private lateinit var postAdapter: PostRecyclerAdapter
+    private var postAdapter: PostRecyclerAdapter? = null
     private val authorViewModel: AuthorViewModel by viewModels()
     private var postList = ArrayList<PostsDomainResponseItem>()
 
@@ -80,14 +81,14 @@ class PostsFragment : Fragment() {
             }
             if (cachedPostsList.isNullOrEmpty()) {
                 Toast.makeText(
-                    requireContext(),
+                    BaseApplication.getAppContext(),
                     "please check your internet connection",
                     Toast.LENGTH_LONG
                 ).show()
             } else {
                 postList.clear()
                 postList.addAll(cachedPostsList)
-                postAdapter.notifyDataSetChanged()
+                postAdapter?.notifyDataSetChanged()
             }
         }
 
@@ -110,7 +111,7 @@ class PostsFragment : Fragment() {
         hideLoading()
         posts_rv.visibility = View.GONE
         Toast.makeText(
-            requireContext(),
+            BaseApplication.getAppContext(),
             "Some Error Occurred, please try again later..",
             Toast.LENGTH_LONG
         ).show()
@@ -120,14 +121,14 @@ class PostsFragment : Fragment() {
         hideLoading()
         if (data.isNullOrEmpty()) {
             Toast.makeText(
-                requireContext(),
+                BaseApplication.getAppContext(),
                 "This author doesn't have any posts",
                 Toast.LENGTH_LONG
             ).show()
         } else {
             postList.addAll(data)
             posts_rv.visibility = View.VISIBLE
-            postAdapter.notifyDataSetChanged()
+            postAdapter?.notifyDataSetChanged()
         }
     }
 
@@ -138,6 +139,13 @@ class PostsFragment : Fragment() {
     private fun showLoading() {
         progress_loading.visibility = View.VISIBLE
         posts_rv.visibility = View.INVISIBLE
+    }
+
+    override fun onDestroyView() {
+        postAdapter = null
+        posts_rv.adapter = null
+        authorViewModel.postsLiveData.value = null
+        super.onDestroyView()
     }
 
 

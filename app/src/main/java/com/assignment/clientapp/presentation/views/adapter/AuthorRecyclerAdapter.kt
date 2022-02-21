@@ -40,7 +40,7 @@ class AuthorRecyclerAdapter(
             .into(holder.recyclerviewPostBinding.authorIv)
 
         holder.recyclerviewPostBinding.root.setOnClickListener {
-            itemClick.invoke(author)
+           itemClick.invoke(author)
         }
     }
 

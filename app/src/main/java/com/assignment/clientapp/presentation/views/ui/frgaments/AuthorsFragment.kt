@@ -23,7 +23,7 @@ import kotlinx.android.synthetic.main.fragment_authors.*
 @AndroidEntryPoint
 class AuthorsFragment : Fragment() {
 
-    private lateinit var authorAdapter: AuthorRecyclerAdapter
+    private var authorAdapter: AuthorRecyclerAdapter? = null
     private val authorViewModel: AuthorViewModel by viewModels()
     private var authorList = ArrayList<AuthorsDomainResponseItem>()
 
@@ -73,7 +73,7 @@ class AuthorsFragment : Fragment() {
         } else {
             author_rv.visibility = View.VISIBLE
             authorList.addAll(data)
-            authorAdapter.notifyDataSetChanged()
+            authorAdapter?.notifyDataSetChanged()
 
         }
     }
@@ -96,6 +96,14 @@ class AuthorsFragment : Fragment() {
             "Some Error Occurred, please try again later..",
             Toast.LENGTH_LONG
         ).show()
+    }
+
+    override fun onDestroyView() {
+        authorAdapter = null
+        author_rv.adapter = null
+
+        super.onDestroyView()
+
     }
 
 
