@@ -16,7 +16,7 @@ class PostsRepositoryImpl @Inject constructor(private val remoteDataSource: Auth
             val response = remoteDataSource.getPosts(userId)
             if (response.isSuccessful) {
                 val body = response.body()
-                emit(body?.mapToDomain()!!)
+                body?.mapToDomain()?.let { emit(it) }
             }
         }
     }

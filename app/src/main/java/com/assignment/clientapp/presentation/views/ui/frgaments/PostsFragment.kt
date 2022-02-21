@@ -8,9 +8,11 @@ import android.widget.Toast
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.lifecycleScope
 import com.assignment.clientapp.R
 import com.assignment.clientapp.databinding.FragmentPostsBinding
 import com.assignment.clientapp.presentation.core.Connectivity
+import com.assignment.clientapp.presentation.core.loadPostsListFromDataStore
 import com.assignment.clientapp.presentation.core.wrapper.DataStatus
 import com.assignment.clientapp.presentation.viewmodel.AuthorViewModel
 import com.assignment.clientapp.presentation.views.adapter.PostRecyclerAdapter
@@ -20,6 +22,7 @@ import com.assignment.domain.model.PostsDomainResponseItem
 import com.bumptech.glide.Glide
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.synthetic.main.fragment_posts.*
+import kotlinx.coroutines.launch
 
 
 @AndroidEntryPoint
@@ -48,25 +51,51 @@ class PostsFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        (activity as MainActivity).changeToolbarTitle("Author Details")
+
         postAdapter = PostRecyclerAdapter(postList, requireContext())
         posts_rv.adapter = postAdapter
-        getPosts(authorModel.id)
-        (activity as MainActivity).changeToolbarTitle("Author Details")
+
+        if (Connectivity.isOnline(requireContext())) {
+            getPosts(authorModel.id)
+        } else {
+            lifecycleScope.launch {
+                getCachedPosts()
+            }
+        }
 
     }
 
 
-    private fun getPosts(id: Int?) {
-        if (Connectivity.isOnline(requireContext())) {
-            authorViewModel.getPostsForAuthor(id.toString())
-        } else {
+    private suspend fun getCachedPosts() {
+        val cachedPostsList: ArrayList<PostsDomainResponseItem> =
+            ArrayList<PostsDomainResponseItem>()
+        lifecycleScope.launch {
             hideLoading()
-            Toast.makeText(
+            loadPostsListFromDataStore(
                 requireContext(),
-                "please check your internet connection",
-                Toast.LENGTH_LONG
-            ).show()
+                authorModel.id.toString()
+            )?.postsDomainResponse?.let {
+                cachedPostsList.addAll(it)
+            }
+            if (cachedPostsList.isNullOrEmpty()) {
+                Toast.makeText(
+                    requireContext(),
+                    "please check your internet connection",
+                    Toast.LENGTH_LONG
+                ).show()
+            } else {
+                postList.clear()
+                postList.addAll(cachedPostsList)
+                postAdapter.notifyDataSetChanged()
+            }
         }
+
+    }
+
+    private fun getPosts(id: Int?) {
+        authorViewModel.getPostsForAuthor(id.toString(), requireContext())
+
         authorViewModel.postsLiveData.observe(requireActivity(), {
             when (it?.status) {
                 DataStatus.Status.LOADING -> showLoading()

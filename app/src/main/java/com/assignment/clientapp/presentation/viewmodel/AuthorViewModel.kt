@@ -1,7 +1,9 @@
 package com.assignment.clientapp.presentation.viewmodel
 
+import android.content.Context
 import androidx.lifecycle.viewModelScope
 import com.assignment.clientapp.presentation.core.BaseViewModel
+import com.assignment.clientapp.presentation.core.savePostsListToDataStore
 import com.assignment.clientapp.presentation.core.wrapper.StateLiveData
 import com.assignment.domain.model.AuthorsDomainResponseItem
 import com.assignment.domain.model.PostsDomainResponseItem
@@ -64,7 +66,7 @@ open class AuthorViewModel @Inject constructor(
     }
 
 
-    fun getPostsForAuthor(authorId: String) {
+    fun getPostsForAuthor(authorId: String, context: Context) {
 
         viewModelScope.launch {
             postsUseCase.getPostsForUser(authorId)
@@ -76,6 +78,8 @@ open class AuthorViewModel @Inject constructor(
                 }
                 .collect {
                     postsLiveData.postSuccess(it.postsDomainResponse)
+                    //save posts into jetpack dataStore
+                    savePostsListToDataStore(context, authorId, it)
                 }
         }
 
