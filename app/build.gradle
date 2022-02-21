@@ -101,7 +101,7 @@ dependencies {
     annotationProcessor 'com.github.bumptech.glide:compiler:4.12.0'
 
     // debugImplementation because LeakCanary should only run in debug builds.
-    debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.8.1'
+   // debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.8.1'
 
 
 }
