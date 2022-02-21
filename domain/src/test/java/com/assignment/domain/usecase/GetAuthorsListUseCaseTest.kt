@@ -39,10 +39,10 @@ class GetAuthorsListUseCaseTest {
     @Test
     fun `getAuthors() when internet connected then return empty list`() {
 
-        val list = ArrayList<AuthorsDomainResponseItem>()
+        val authFakeModel = AuthorsDomainResponse()
         val fakeRepo = object : AuthorsRepository {
             override fun getAuthorsListFromAPI(): Single<AuthorsDomainResponse> {
-                return Single.just(AuthorsDomainResponse(emptyList()))
+                return Single.just(authFakeModel)
             }
 
             override fun getAuthorsListFromLocalStorage(): Single<List<AuthorsDomainResponseItem>> {
@@ -51,8 +51,8 @@ class GetAuthorsListUseCaseTest {
         }
         val result = GetAuthorsListUseCase(fakeRepo).getAuthors().blockingGet()
 
-        val expected = AuthorsDomainResponse(list)
-        assertEquals(expected, result)
+
+        assertEquals(authFakeModel, result)
 
     }
 
@@ -83,19 +83,19 @@ class GetAuthorsListUseCaseTest {
     @Test
     fun `getAuthorsFromStorage() return empty list`() {
 
+        val authList = emptyList<AuthorsDomainResponseItem>()
         val fakeRepo = object : AuthorsRepository {
             override fun getAuthorsListFromAPI(): Single<AuthorsDomainResponse> {
                 return Single.just(AuthorsDomainResponse(emptyList()))
             }
 
             override fun getAuthorsListFromLocalStorage(): Single<List<AuthorsDomainResponseItem>> {
-                return Single.just(ArrayList())
+                return Single.just(authList)
             }
         }
         val result = GetAuthorsListUseCase(fakeRepo).getAuthorsFromStorage().blockingGet()
 
-        val expected = emptyList<AuthorsDomainResponseItem>()
-        assertEquals(expected, result)
+        assertEquals(authList, result)
     }
 
     @Test
