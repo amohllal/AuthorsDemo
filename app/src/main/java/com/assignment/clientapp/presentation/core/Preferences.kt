@@ -52,9 +52,7 @@ suspend fun savePostsListToDataStore(context: Context, key: String, value: Posts
 }
 
 fun getJsonObject(json: String?, type: Class<PostsDomainResponse>): PostsDomainResponse? {
-
     val gson = Gson()
-
     return gson.fromJson(json, type)
 }
 

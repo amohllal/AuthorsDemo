@@ -13,10 +13,17 @@ class GetAuthorsListUseCaseTest {
     @Test
     fun `getAuthors() when internet connected then return listOf Authors`() {
 
-        val list = ArrayList<AuthorsDomainResponse>(3)
+        val auth1 = AuthorsDomainResponseItem(id = 1)
+        val auth2 = AuthorsDomainResponseItem(id = 2)
+        val listOfAuth = ArrayList<AuthorsDomainResponseItem>().apply {
+            add(auth1)
+            add(auth2)
+        }
+        val authDomain = AuthorsDomainResponse(listOfAuth)
+
         val fakeRepo = object : AuthorsRepository {
             override fun getAuthorsListFromAPI(): Single<AuthorsDomainResponse> {
-                return Single.just(AuthorsDomainResponse(ArrayList<AuthorsDomainResponseItem>(list.size)))
+                return Single.just(authDomain)
             }
 
             override fun getAuthorsListFromLocalStorage(): Single<List<AuthorsDomainResponseItem>> {
@@ -25,8 +32,7 @@ class GetAuthorsListUseCaseTest {
         }
         val result = GetAuthorsListUseCase(fakeRepo).getAuthors().blockingGet()
 
-        val expected = AuthorsDomainResponse(ArrayList<AuthorsDomainResponseItem>(list.size))
-        assertEquals(expected, result)
+        assertEquals(authDomain, result)
 
     }
 
@@ -51,23 +57,26 @@ class GetAuthorsListUseCaseTest {
     }
 
     @Test
-    fun `getAuthors() when internet disconnected then invoke getAuthorsFromStorage()`() {
-        var invoked = true
+    fun `getAuthors() when internet disconnected then return list from authors from local storage`() {
+        val auth1 = AuthorsDomainResponseItem(id = 1)
+        val auth2 = AuthorsDomainResponseItem(id = 2)
+        val listOfAuth = ArrayList<AuthorsDomainResponseItem>().apply {
+            add(auth1)
+            add(auth2)
+        }
+
         val fakeRepo = object : AuthorsRepository {
             override fun getAuthorsListFromAPI(): Single<AuthorsDomainResponse> {
                 return Single.just(AuthorsDomainResponse(emptyList()))
             }
 
             override fun getAuthorsListFromLocalStorage(): Single<List<AuthorsDomainResponseItem>> {
-                invoked = true
-                return Single.just(ArrayList())
+                return Single.just(listOfAuth)
             }
         }
 
-        GetAuthorsListUseCase(fakeRepo).getAuthors().blockingGet()
-
-
-        assert(invoked)
+        val result = GetAuthorsListUseCase(fakeRepo).getAuthorsFromStorage().blockingGet()
+        assertEquals(listOfAuth, result)
 
     }
 
