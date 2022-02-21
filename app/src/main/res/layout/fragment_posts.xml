@@ -30,7 +30,7 @@
             <androidx.cardview.widget.CardView xmlns:card_view="http://schemas.android.com/tools"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/_4sdp"
+                android:layout_margin="@dimen/_4sdp"
                 app:cardCornerRadius="@dimen/_4sdp"
                 card_view:cardUseCompatPadding="true">
 
@@ -45,65 +45,36 @@
                         android:layout_weight="1"
                         android:orientation="vertical">
 
-                        <LinearLayout
-                            android:layout_width="match_parent"
+
+                        <TextView
+                            android:id="@+id/author_name_tv"
+                            style="@style/valueStyle"
+                            android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_margin="@dimen/_4sdp"
-                            android:orientation="horizontal">
+                            android:drawablePadding="4dp"
+                            android:text="@{author.name}"
+                            app:drawableStartCompat="@drawable/name_icon" />
 
-                            <TextView
-                                style="@style/hintStyle"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="Name: " />
 
-                            <TextView
-                                android:id="@+id/author_name_tv"
-                                style="@style/valueStyle"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="@{author.name}" />
-                        </LinearLayout>
-
-                        <LinearLayout
-                            android:layout_width="match_parent"
+                        <TextView
+                            android:id="@+id/author_username_tv"
+                            style="@style/valueStyle"
+                            android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_margin="@dimen/_4sdp"
-                            android:orientation="horizontal">
+                            android:drawablePadding="4dp"
+                            android:text="@{author.userName}"
+                            app:drawableStartCompat="@drawable/username_icon" />
 
-                            <TextView
-                                style="@style/hintStyle"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="UserName: " />
 
-                            <TextView
-                                android:id="@+id/author_username_tv"
-                                style="@style/valueStyle"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="@{author.userName}" />
-                        </LinearLayout>
-
-                        <LinearLayout
-                            android:layout_width="match_parent"
+                        <TextView
+                            android:id="@+id/author_email_tv"
+                            style="@style/valueStyle"
+                            android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_margin="@dimen/_4sdp"
-                            android:orientation="horizontal">
+                            android:drawablePadding="4dp"
+                            android:text="@{author.email}"
+                            app:drawableStartCompat="@drawable/email_icon" />
 
-                            <TextView
-                                style="@style/hintStyle"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="Email: " />
-
-                            <TextView
-                                android:id="@+id/author_email_tv"
-                                style="@style/valueStyle"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="@{author.email}" />
-                        </LinearLayout>
 
                     </LinearLayout>
 
@@ -125,10 +96,10 @@
                     android:id="@+id/progress_loading"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_centerInParent="true"
                     android:indeterminate="true"
-                    android:visibility="visible"
                     android:indeterminateTintMode="src_atop"
-                    android:layout_centerInParent="true" />
+                    android:visibility="visible" />
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/posts_rv"

@@ -14,6 +14,7 @@ import com.assignment.clientapp.presentation.core.Connectivity
 import com.assignment.clientapp.presentation.core.wrapper.DataStatus
 import com.assignment.clientapp.presentation.viewmodel.AuthorViewModel
 import com.assignment.clientapp.presentation.views.adapter.PostRecyclerAdapter
+import com.assignment.clientapp.presentation.views.ui.activities.MainActivity
 import com.assignment.domain.model.AuthorsDomainResponseItem
 import com.assignment.domain.model.PostsDomainResponseItem
 import com.bumptech.glide.Glide
@@ -50,6 +51,8 @@ class PostsFragment : Fragment() {
         postAdapter = PostRecyclerAdapter(postList, requireContext())
         posts_rv.adapter = postAdapter
         getPosts(authorModel.id)
+        (activity as MainActivity).changeToolbarTitle("Author Details")
+
     }
 
 

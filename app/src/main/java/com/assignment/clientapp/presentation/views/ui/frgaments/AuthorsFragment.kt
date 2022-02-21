@@ -14,6 +14,7 @@ import com.assignment.clientapp.presentation.core.Connectivity
 import com.assignment.clientapp.presentation.core.wrapper.DataStatus
 import com.assignment.clientapp.presentation.viewmodel.AuthorViewModel
 import com.assignment.clientapp.presentation.views.adapter.AuthorRecyclerAdapter
+import com.assignment.clientapp.presentation.views.ui.activities.MainActivity
 import com.assignment.domain.model.AuthorsDomainResponseItem
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.synthetic.main.fragment_authors.*
@@ -36,6 +37,7 @@ class AuthorsFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        (activity as MainActivity).changeToolbarTitle("Authors")
 
         authorAdapter = AuthorRecyclerAdapter(authorList, requireContext()) {
             val bundle = bundleOf("author" to it)

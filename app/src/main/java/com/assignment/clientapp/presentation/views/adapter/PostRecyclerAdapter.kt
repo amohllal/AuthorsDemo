@@ -31,7 +31,8 @@ class PostRecyclerAdapter(
         val post = postList[position]
 
         holder.recyclerviewPostBinding.postTitleTv.text = post.title
-        holder.recyclerviewPostBinding.postDateTv.text = post.date
+        holder.recyclerviewPostBinding.postDateTv.text =
+            post.date?.replace("T", " ")?.replace("Z", "")
         holder.recyclerviewPostBinding.postBodyTv.text = post.body
         Glide.with(context)
             .load(post.imageUrl)
