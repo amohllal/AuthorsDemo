@@ -22,8 +22,8 @@ Client app for new micro blogging platform consisting of only 1 Activity and 2 f
 - ConstraintLayout
 - LeakCanary to check memory leaks
 # ScreenShots
-<img width="208" alt="screen1" src="https://user-images.githubusercontent.com/40995581/154990309-75b31dac-922e-4ec5-a5a6-bbc7d59b79e4.jpg">
-<img width="209" alt="screen3" src="https://user-images.githubusercontent.com/40995581/154990808-0bcf3b71-6168-4d88-a46d-d9057e8cbcd0.jpg">
+<img width="209" alt="screen3" src="https://user-images.githubusercontent.com/40995581/154990808-0bcf3b71-6168-4d88-a46d-d9057e8cbcd0.jpg"><img width="208" alt="screen1" src="https://user-images.githubusercontent.com/40995581/154990309-75b31dac-922e-4ec5-a5a6-bbc7d59b79e4.jpg">
+
 
 
 
