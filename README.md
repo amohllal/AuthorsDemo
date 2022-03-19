@@ -1,4 +1,4 @@
-# Client-App
+# Authors Demo
 Client app for new micro blogging platform consisting of only 1 Activity and 2 fragments when the user opens the app should check the network connectivity and if the device connected to internet then hit API and get all authors data and cache them using room. if the app not connected to internet then it will get all cached authors if found. when clicked on any author then open another screen and hit api to get posts for the selected author and cache them using jetpack data store.
 # Tech Stack
 - Clean Architecture with MVVM
