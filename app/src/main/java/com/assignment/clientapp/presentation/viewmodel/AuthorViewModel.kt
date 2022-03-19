@@ -22,8 +22,7 @@ import javax.inject.Inject
 open class AuthorViewModel @Inject constructor(
     private val authorsUseCase: GetAuthorsListUseCase,
     private val postsUseCase: GetPostsListUseCase
-) :
-    BaseViewModel() {
+) : BaseViewModel() {
 
     val authorsLiveData by lazy { StateLiveData<List<AuthorsDomainResponseItem>?>() }
     val postsLiveData by lazy { StateLiveData<List<PostsDomainResponseItem>?>() }
@@ -57,11 +56,10 @@ open class AuthorViewModel @Inject constructor(
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({ response ->
                     authorsLiveData.postSuccess(response)
-                },
-                    { error ->
-                        authorsLiveData.postError(error)
-                        error.printStackTrace()
-                    })
+                }, { error ->
+                    authorsLiveData.postError(error)
+                    error.printStackTrace()
+                })
         )
     }
 
