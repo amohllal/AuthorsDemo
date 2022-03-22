@@ -12,6 +12,7 @@ Android Application with new micro blogging platform consisting of only 1 Activi
 - Dependency Injection: Hilt
 - Repository pattern
 - LiveData, ViewModel
+- Obfuscating with ProGuard
 - Retrofit
 - DataBinding
 - Recycler view 
