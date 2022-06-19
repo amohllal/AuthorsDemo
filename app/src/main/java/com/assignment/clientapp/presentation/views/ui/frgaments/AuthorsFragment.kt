@@ -43,8 +43,6 @@ class AuthorsFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        (activity as MainActivity).changeToolbarTitle("Authors")
-
         authorAdapter = AuthorRecyclerAdapter(authorList, requireContext()) {
             val bundle = bundleOf("author" to it)
             view.findNavController()
@@ -108,7 +106,6 @@ class AuthorsFragment : Fragment() {
     override fun onDestroyView() {
         authorAdapter = null
         author_rv.adapter = null
-
         super.onDestroyView()
 
     }

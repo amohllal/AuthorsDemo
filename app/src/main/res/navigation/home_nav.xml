@@ -25,7 +25,12 @@
             app:destination="@id/authorsFragment"
             app:exitAnim="@anim/nav_default_exit_anim" />
         <argument
-            android:name="authorData"
-            app:argType="com.assignment.domain.model.AuthorsDomainResponseItem" />
+            android:name="id"
+            app:argType="string"
+            android:defaultValue="author"
+            />
+        <deepLink
+            android:id="@+id/deepLink"
+            app:uri="http://www.authorahmed.com/author/{id}" />
     </fragment>
 </navigation>

@@ -1,6 +1,7 @@
 package com.assignment.clientapp.presentation.views.ui.frgaments
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -9,6 +10,7 @@ import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.navArgs
 import com.assignment.clientapp.R
 import com.assignment.clientapp.databinding.FragmentPostsBinding
 import com.assignment.clientapp.presentation.core.BaseApplication
@@ -29,11 +31,11 @@ import kotlinx.coroutines.launch
 @AndroidEntryPoint
 class PostsFragment : Fragment() {
 
-    private lateinit var authorModel: AuthorsDomainResponseItem
     private var postAdapter: PostRecyclerAdapter? = null
     private val authorViewModel: AuthorViewModel by viewModels()
     private var postList = ArrayList<PostsDomainResponseItem>()
-
+    private val args : PostsFragmentArgs by navArgs()
+    private lateinit var authorId : String
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -42,23 +44,18 @@ class PostsFragment : Fragment() {
         val binding: FragmentPostsBinding =
             DataBindingUtil.inflate(inflater, R.layout.fragment_posts, null, false)
         val view = binding.root
-        authorModel = arguments?.getSerializable("author") as AuthorsDomainResponseItem
-        binding.author = authorModel
-        Glide.with(requireContext())
-            .load(authorModel.avatarUrl)
-            .into(binding.authorIv)
+        authorId = args.id
         return view
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        (activity as MainActivity).changeToolbarTitle("Author Details")
 
         postAdapter = PostRecyclerAdapter(postList, requireContext())
         posts_rv.adapter = postAdapter
 
         if (Connectivity.isOnline(requireContext())) {
-            getPosts(authorModel.id)
+            getPosts(authorId)
         } else {
             lifecycleScope.launch {
                 getCachedPosts()
@@ -75,11 +72,11 @@ class PostsFragment : Fragment() {
             hideLoading()
             loadPostsListFromDataStore(
                 requireContext(),
-                authorModel.id.toString()
+                authorId
             )?.postsDomainResponse?.let {
                 cachedPostsList.addAll(it)
             }
-            if (cachedPostsList.isNullOrEmpty()) {
+            if (cachedPostsList.isEmpty()) {
                 Toast.makeText(
                     BaseApplication.getAppContext(),
                     "please check your internet connection",
@@ -94,16 +91,17 @@ class PostsFragment : Fragment() {
 
     }
 
-    private fun getPosts(id: Int?) {
-        authorViewModel.getPostsForAuthor(id.toString(), requireContext())
+    private fun getPosts(id: String) {
+        authorViewModel.getPostsForAuthor(id, requireContext())
 
-        authorViewModel.postsLiveData.observe(requireActivity(), {
+        authorViewModel.postsLiveData.observe(requireActivity()) {
             when (it?.status) {
                 DataStatus.Status.LOADING -> showLoading()
                 DataStatus.Status.SUCCESS -> handleSuccessData(it.data)
                 DataStatus.Status.ERROR -> showError()
+                else -> {}
             }
-        })
+        }
 
     }
 
