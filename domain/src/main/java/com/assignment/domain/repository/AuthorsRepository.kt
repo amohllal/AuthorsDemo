@@ -5,7 +5,7 @@ import com.assignment.domain.model.AuthorsDomainResponseItem
 import io.reactivex.Single
 
 interface AuthorsRepository {
-    fun getAuthorsListFromAPI(): Single<AuthorsDomainResponse>
+    suspend fun getAuthorsListFromAPI(): AuthorsDomainResponse
 
-    fun getAuthorsListFromLocalStorage(): Single<List<AuthorsDomainResponseItem>>
+    suspend fun getAuthorsListFromLocalStorage(): List<AuthorsDomainResponseItem>
 }

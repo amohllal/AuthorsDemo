@@ -38,6 +38,10 @@ fun List<AuthorsEntity>.mapToRemoteResponse() = this.map {
         userName = it.userName!!
     )
 }
+fun List<AuthorsDataResponseItem>.mapToDomainResponse() = AuthorsDomainResponse(this.map {
+    AuthorsDomainResponseItem(avatarUrl = it.avatarUrl, name = it.name, id = it.id, userName = it.userName, email = it.email)
+})
+
 
 fun AuthorsDomainResponseItem.mapToEntities() =
     AuthorsEntity(

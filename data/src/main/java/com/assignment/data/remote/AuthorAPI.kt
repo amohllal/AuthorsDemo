@@ -10,7 +10,7 @@ import retrofit2.http.Query
 interface AuthorAPI {
 
     @GET("authors")
-    fun getAuthors(): Single<AuthorsDataResponse>
+    suspend fun getAuthors(): Response<AuthorsDataResponse>
 
     @GET("posts")
     suspend fun getPosts(@Query("authorId") userId: String): Response<PostsDataResponse>

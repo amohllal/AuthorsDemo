@@ -4,6 +4,7 @@ import com.assignment.domain.model.AuthorsDomainResponse
 import com.assignment.domain.model.AuthorsDomainResponseItem
 import com.assignment.domain.repository.AuthorsRepository
 import io.reactivex.Single
+import kotlinx.coroutines.runBlocking
 import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Test
@@ -30,10 +31,11 @@ class GetAuthorsListUseCaseTest {
             add(auth2)
         }
         val authDomain = AuthorsDomainResponse(listOfAuth)
-        `when`(authorRepo.getAuthorsListFromAPI()).thenReturn(Single.just(authDomain))
-
-        //act
-        val result = GetAuthorsListUseCase(authorRepo).getAuthors().blockingGet()
+        var result: AuthorsDomainResponse
+        runBlocking {
+            `when`(authorRepo.getAuthorsListFromAPI()).thenReturn(authDomain)
+             result = GetAuthorsListUseCase(authorRepo).getAuthors()
+        }
 
         //assert
         assertEquals(authDomain, result)
@@ -45,9 +47,11 @@ class GetAuthorsListUseCaseTest {
 
         val authFakeModel = AuthorsDomainResponse()
 
-        `when`(authorRepo.getAuthorsListFromAPI()).thenReturn(Single.just(authFakeModel))
-
-        val result = GetAuthorsListUseCase(authorRepo).getAuthors().blockingGet()
+        var result: AuthorsDomainResponse
+        runBlocking {
+            `when`(authorRepo.getAuthorsListFromAPI()).thenReturn(authFakeModel)
+             result = GetAuthorsListUseCase(authorRepo).getAuthors()
+        }
 
         assertEquals(authFakeModel, result)
 
@@ -63,16 +67,20 @@ class GetAuthorsListUseCaseTest {
         }
 
         val fakeRepo = object : AuthorsRepository {
-            override fun getAuthorsListFromAPI(): Single<AuthorsDomainResponse> {
-                return Single.just(AuthorsDomainResponse(emptyList()))
+            override suspend fun getAuthorsListFromAPI(): AuthorsDomainResponse {
+                return AuthorsDomainResponse(emptyList())
             }
 
-            override fun getAuthorsListFromLocalStorage(): Single<List<AuthorsDomainResponseItem>> {
-                return Single.just(listOfAuth)
+            override suspend fun getAuthorsListFromLocalStorage(): List<AuthorsDomainResponseItem> {
+                return listOfAuth
             }
         }
 
-        val result = GetAuthorsListUseCase(fakeRepo).getAuthorsFromStorage().blockingGet()
+        var result: List<AuthorsDomainResponseItem>
+        runBlocking {
+             result = GetAuthorsListUseCase(fakeRepo).getAuthorsFromStorage()
+
+        }
         assertEquals(listOfAuth, result)
 
     }
@@ -82,16 +90,26 @@ class GetAuthorsListUseCaseTest {
 
         val authList = emptyList<AuthorsDomainResponseItem>()
         val fakeRepo = object : AuthorsRepository {
-            override fun getAuthorsListFromAPI(): Single<AuthorsDomainResponse> {
+            override suspend fun getAuthorsListFromAPI(): AuthorsDomainResponse {
+                return AuthorsDomainResponse(emptyList())
+            }
+
+            override suspend fun getAuthorsListFromLocalStorage(): List<AuthorsDomainResponseItem> {
+                return authList
+            }
+
+            /* override fun getAuthorsListFromAPI(): Single<AuthorsDomainResponse> {
                 return Single.just(AuthorsDomainResponse(emptyList()))
             }
 
             override fun getAuthorsListFromLocalStorage(): Single<List<AuthorsDomainResponseItem>> {
                 return Single.just(authList)
-            }
+            }*/
         }
-        val result = GetAuthorsListUseCase(fakeRepo).getAuthorsFromStorage().blockingGet()
-
+        var result : List<AuthorsDomainResponseItem>
+        runBlocking {
+            result = GetAuthorsListUseCase(fakeRepo).getAuthorsFromStorage()
+        }
         assertEquals(authList, result)
     }
 
@@ -104,16 +122,19 @@ class GetAuthorsListUseCaseTest {
         list.add(3, AuthorsDomainResponseItem())
 
         val fakeRepo = object : AuthorsRepository {
-            override fun getAuthorsListFromAPI(): Single<AuthorsDomainResponse> {
-                return Single.just(AuthorsDomainResponse(emptyList()))
+            override suspend fun getAuthorsListFromAPI(): AuthorsDomainResponse {
+                return AuthorsDomainResponse(emptyList())
             }
 
-            override fun getAuthorsListFromLocalStorage(): Single<List<AuthorsDomainResponseItem>> {
-                return Single.just(list)
+            override suspend fun getAuthorsListFromLocalStorage(): List<AuthorsDomainResponseItem> {
+                return list
             }
+
         }
-        val result = GetAuthorsListUseCase(fakeRepo).getAuthorsFromStorage().blockingGet()
-
+        var result : List<AuthorsDomainResponseItem>
+        runBlocking {
+            result = GetAuthorsListUseCase(fakeRepo).getAuthorsFromStorage()
+        }
         assertEquals(list, result)
     }
 }

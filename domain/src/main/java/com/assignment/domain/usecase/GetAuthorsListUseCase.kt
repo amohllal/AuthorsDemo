@@ -4,9 +4,9 @@ import com.assignment.domain.repository.AuthorsRepository
 import javax.inject.Inject
 
 class GetAuthorsListUseCase @Inject constructor(private val authorRepo: AuthorsRepository) {
-    fun getAuthors() = authorRepo.getAuthorsListFromAPI()
+    suspend fun getAuthors() = authorRepo.getAuthorsListFromAPI()
 
-    fun getAuthorsFromStorage() = authorRepo.getAuthorsListFromLocalStorage()
+   suspend fun getAuthorsFromStorage() = authorRepo.getAuthorsListFromLocalStorage()
 
 
 }

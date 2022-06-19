@@ -15,5 +15,5 @@ interface AuthorDAO {
 
 
     @Query("SELECT * FROM Authors")
-    fun getAuthorsFromDatabase(): Single<List<AuthorsEntity>>
+    suspend fun getAuthorsFromDatabase(): List<AuthorsEntity>
 }

@@ -2,6 +2,7 @@ package com.assignment.data.repository
 
 import com.assignment.data.local.AuthorDAO
 import com.assignment.data.mapper.mapToDomain
+import com.assignment.data.mapper.mapToDomainResponse
 import com.assignment.data.mapper.mapToEntity
 import com.assignment.data.mapper.mapToRemoteResponse
 import com.assignment.data.model.remote.author.AuthorsDataResponse
@@ -11,6 +12,9 @@ import com.assignment.domain.model.AuthorsDomainResponseItem
 import com.assignment.domain.repository.AuthorsRepository
 import io.reactivex.Completable
 import io.reactivex.Single
+import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.selects.SelectBuilder
+import kotlinx.coroutines.selects.select
 import javax.inject.Inject
 
 class AuthorsRepositoryImpl @Inject constructor
@@ -18,32 +22,20 @@ class AuthorsRepositoryImpl @Inject constructor
     private val remoteDataSource: AuthorAPI,
     private val localDataSource: AuthorDAO
 ) : AuthorsRepository {
-    override fun getAuthorsListFromAPI(): Single<AuthorsDomainResponse> {
-        return remoteDataSource
-            .getAuthors()
-            .flatMap { authorDataResponse ->
-                Completable.fromAction {
-                    localDataSource.saveListOfAuthors(authorDataResponse.map {
-                        it.mapToEntity()
-                    })
-                }.andThen(Single.just(authorDataResponse))
-            }
-            .onErrorResumeNext {
-                localDataSource.getAuthorsFromDatabase().map {
-                    it.mapToRemoteResponse() as AuthorsDataResponse?
-                }
-            }
-            .map {
-                it.mapToDomain()
-            }
+    override suspend fun getAuthorsListFromAPI(): AuthorsDomainResponse {
+        val response = remoteDataSource.getAuthors()
+        return if (response.isSuccessful){
+            localDataSource.saveListOfAuthors(response.body()?.map { it.mapToEntity() }!!)
+            response.body()!!.mapToDomain()
+        }else{
+            localDataSource.getAuthorsFromDatabase().mapToRemoteResponse().mapToDomainResponse()
+        }
+
     }
 
-
-    override fun getAuthorsListFromLocalStorage(): Single<List<AuthorsDomainResponseItem>> {
-        return localDataSource.getAuthorsFromDatabase().map {
-            it.map { entity ->
-                entity.mapToDomain()
-            }
+    override suspend fun getAuthorsListFromLocalStorage(): List<AuthorsDomainResponseItem> {
+        return localDataSource.getAuthorsFromDatabase().mapToRemoteResponse().map {
+            it.mapToEntity().mapToDomain()
         }
     }
 }

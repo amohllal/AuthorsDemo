@@ -1,6 +1,7 @@
 package com.assignment.clientapp.presentation.views.ui.frgaments
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -8,6 +9,7 @@ import android.widget.Toast
 import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.findNavController
 import com.assignment.clientapp.R
 import com.assignment.clientapp.presentation.core.Connectivity
@@ -18,6 +20,11 @@ import com.assignment.clientapp.presentation.views.ui.activities.MainActivity
 import com.assignment.domain.model.AuthorsDomainResponseItem
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.synthetic.main.fragment_authors.*
+import kotlinx.coroutines.*
+import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.channels.consumeEach
+import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.sync.Mutex
 
 
 @AndroidEntryPoint
@@ -25,8 +32,7 @@ class AuthorsFragment : Fragment() {
 
     private var authorAdapter: AuthorRecyclerAdapter? = null
     private val authorViewModel: AuthorViewModel by viewModels()
-    private var authorList = ArrayList<AuthorsDomainResponseItem>()
-
+    private var authorList = arrayListOf<AuthorsDomainResponseItem>()
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -45,26 +51,27 @@ class AuthorsFragment : Fragment() {
                 .navigate(R.id.navigate_authorsFragment_to_postsFragment, bundle)
         }
         author_rv.adapter = authorAdapter
-        getAuthorsList()
 
-
-    }
-
-    private fun getAuthorsList() {
-        if (Connectivity.isOnline(requireContext())) {
-            authorViewModel.getAuthorsList()
-        } else {
-            authorViewModel.getAuthorsFromStorage()
+        lifecycleScope.launch {
+            getAuthorsList()
         }
-        authorViewModel.authorsLiveData.observe(requireActivity(), {
-            when (it?.status) {
-                DataStatus.Status.LOADING -> showLoading()
-                DataStatus.Status.SUCCESS -> handleSuccessData(it.data)
-                DataStatus.Status.ERROR -> showError()
-            }
-        })
     }
 
+    private  fun getAuthorsList() {
+          if (Connectivity.isOnline(requireContext())) {
+              authorViewModel.getAuthorsList()
+          } else {
+              authorViewModel.getAuthorsFromStorage()
+          }
+          authorViewModel.authorsLiveData.observe(requireActivity()) {
+              when (it?.status) {
+                  DataStatus.Status.LOADING -> showLoading()
+                  DataStatus.Status.SUCCESS -> handleSuccessData(it.data)
+                  DataStatus.Status.ERROR -> showError()
+                  else -> {}
+              }
+          }
+    }
     private fun handleSuccessData(data: List<AuthorsDomainResponseItem>?) {
         hideLoading()
         if (data.isNullOrEmpty()) {
