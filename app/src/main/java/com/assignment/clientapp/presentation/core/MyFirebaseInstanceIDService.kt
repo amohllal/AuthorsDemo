@@ -5,23 +5,20 @@ import com.google.firebase.messaging.RemoteMessage
 
 class MyFirebaseInstanceIDService : FirebaseMessagingService() {
 
+    private lateinit var notificationModel: NotificationModel
     override fun onNewToken(s: String) {
         super.onNewToken(s)
     }
 
     override fun onMessageReceived(remoteMessage: RemoteMessage) {
         super.onMessageReceived(remoteMessage)
-        var title = ""
-        var message = ""
-        var destination = ""
         if (remoteMessage.data.isNotEmpty()) {
             remoteMessage.apply {
-                title = data["title"].toString()
-                message = data["message"].toString()
-                destination = data["author"].toString()
+                val title = data["title"].toString()
+                val message = data["message"].toString()
+                val destination = data["author"].toString()
+                notificationModel = NotificationModel(title, message, destination)
             }
-
-            val notificationModel = NotificationModel(title, message, destination)
             this.makeNotification(notificationModel)
         }
     }
