@@ -31,11 +31,11 @@ fun PostsDataResponse.mapToDomain() = PostsDomainResponse(this.map {
 fun List<AuthorsEntity>.mapToRemoteResponse() = this.map {
     AuthorsDataResponseItem(
         address = null,
-        avatarUrl = it.avatarUrl!!,
-        email = it.email!!,
-        id = it.id!!,
-        name = it.name!!,
-        userName = it.userName!!
+        avatarUrl = it.avatarUrl,
+        email = it.email,
+        id = it.id,
+        name = it.name,
+        userName = it.userName
     )
 }
 fun List<AuthorsDataResponseItem>.mapToDomainResponse() = AuthorsDomainResponse(this.map {

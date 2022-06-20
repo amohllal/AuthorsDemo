@@ -16,8 +16,7 @@ import io.reactivex.Scheduler
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import kotlinx.coroutines.*
-import kotlinx.coroutines.channels.Channel
-import kotlinx.coroutines.channels.produce
+import kotlinx.coroutines.channels.*
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.onStart
@@ -25,6 +24,7 @@ import kotlinx.coroutines.flow.receiveAsFlow
 import javax.inject.Inject
 import javax.inject.Named
 
+@OptIn(ObsoleteCoroutinesApi::class)
 @HiltViewModel
 open class AuthorViewModel @Inject constructor(
     private val authorsUseCase: GetAuthorsListUseCase,
@@ -33,23 +33,40 @@ open class AuthorViewModel @Inject constructor(
 
     val authorsLiveData by lazy { StateLiveData<List<AuthorsDomainResponseItem>?>() }
     val postsLiveData by lazy { StateLiveData<List<PostsDomainResponseItem>?>() }
-    fun getAuthorsList() {
+    val authorSenderChannel = Channel<AuthorsDomainResponse>()
+    lateinit var authorActor :  Channel<List<AuthorsDomainResponseItem>>
+    init {
+        initActor()
+
+    }
+
+    private fun initActor() {
         viewModelScope.launch {
-            val authorList = authorsUseCase.getAuthors()
-            authorsLiveData.postSuccess(authorList.authorsDomainResponse)
+            authorActor = actor<List<AuthorsDomainResponseItem>> {
+                consumeEach {
+                    channel.send(it)
+                }
+            } as Channel<List<AuthorsDomainResponseItem>>
+        }
+    }
+
+    fun getAuthorsListUsingChannel() {
+        viewModelScope.launch {
+            authorSenderChannel.send(authorsUseCase.getAuthors())
+            authorSenderChannel.close()
         }
     }
 
     fun getAuthorsFromStorage() {
         viewModelScope.launch {
             val authorList = authorsUseCase.getAuthorsFromStorage()
-            authorsLiveData.postSuccess(authorList)
+            authorActor.send(authorList)
+            authorActor.close()
         }
     }
 
 
     fun getPostsForAuthor(authorId: String, context: Context) {
-
         viewModelScope.launch {
             postsUseCase.getPostsForUser(authorId)
                 .onStart {

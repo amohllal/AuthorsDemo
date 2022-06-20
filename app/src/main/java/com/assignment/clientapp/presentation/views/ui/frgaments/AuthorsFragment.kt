@@ -1,11 +1,13 @@
 package com.assignment.clientapp.presentation.views.ui.frgaments
 
+import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.annotation.RequiresApi
 import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -17,11 +19,13 @@ import com.assignment.clientapp.presentation.core.wrapper.DataStatus
 import com.assignment.clientapp.presentation.viewmodel.AuthorViewModel
 import com.assignment.clientapp.presentation.views.adapter.AuthorRecyclerAdapter
 import com.assignment.clientapp.presentation.views.ui.activities.MainActivity
+import com.assignment.domain.model.AuthorsDomainResponse
 import com.assignment.domain.model.AuthorsDomainResponseItem
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.synthetic.main.fragment_authors.*
 import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.channels.ReceiveChannel
 import kotlinx.coroutines.channels.consumeEach
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.sync.Mutex
@@ -41,6 +45,7 @@ class AuthorsFragment : Fragment() {
         return inflater.inflate(R.layout.fragment_authors, container, false)
     }
 
+    @RequiresApi(Build.VERSION_CODES.M)
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         authorAdapter = AuthorRecyclerAdapter(authorList, requireContext()) {
@@ -49,27 +54,37 @@ class AuthorsFragment : Fragment() {
                 .navigate(R.id.navigate_authorsFragment_to_postsFragment, bundle)
         }
         author_rv.adapter = authorAdapter
+        getAuthors()
+    }
 
-        lifecycleScope.launch {
-            getAuthorsList()
+    @RequiresApi(Build.VERSION_CODES.M)
+    private fun getAuthors(){
+        if (Connectivity.isOnline(requireContext())) {
+            getAuthorsChannel()
+        } else {
+            getAuthorsStorageChannels()
         }
     }
 
-    private  fun getAuthorsList() {
-          if (Connectivity.isOnline(requireContext())) {
-              authorViewModel.getAuthorsList()
-          } else {
-              authorViewModel.getAuthorsFromStorage()
-          }
-          authorViewModel.authorsLiveData.observe(requireActivity()) {
-              when (it?.status) {
-                  DataStatus.Status.LOADING -> showLoading()
-                  DataStatus.Status.SUCCESS -> handleSuccessData(it.data)
-                  DataStatus.Status.ERROR -> showError()
-                  else -> {}
-              }
-          }
+    private fun getAuthorsChannel() {
+        lifecycleScope.launch {
+            authorViewModel.getAuthorsListUsingChannel()
+            val authorReceiverChannel = authorViewModel.authorSenderChannel.receive()
+            for (i in authorReceiverChannel.authorsDomainResponse!!) {
+                authorList.add(i)
+            }
+            handleSuccessData(authorList)
+        }
     }
+
+    private fun getAuthorsStorageChannels() {
+        authorViewModel.getAuthorsFromStorage()
+        lifecycleScope.launch {
+            val authorListReceiver = authorViewModel.authorActor.receive()
+            handleSuccessData(authorListReceiver)
+        }
+    }
+
     private fun handleSuccessData(data: List<AuthorsDomainResponseItem>?) {
         hideLoading()
         if (data.isNullOrEmpty()) {

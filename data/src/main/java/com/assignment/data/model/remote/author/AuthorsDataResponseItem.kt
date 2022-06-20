@@ -7,13 +7,13 @@ data class AuthorsDataResponseItem(
     @SerializedName("address")
     val address: Address? = null,
     @SerializedName("avatarUrl")
-    val avatarUrl: String,
+    val avatarUrl: String? =null,
     @SerializedName("email")
-    val email: String,
+    val email: String? = null,
     @SerializedName("id")
-    val id: Int,
+    val id: Int? = null,
     @SerializedName("name")
-    val name: String,
+    val name: String? = null,
     @SerializedName("userName")
-    val userName: String
+    val userName: String? = null
 )
