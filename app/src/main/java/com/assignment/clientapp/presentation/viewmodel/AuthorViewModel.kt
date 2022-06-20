@@ -37,7 +37,6 @@ open class AuthorViewModel @Inject constructor(
     lateinit var authorActor :  Channel<List<AuthorsDomainResponseItem>>
     init {
         initActor()
-
     }
 
     private fun initActor() {

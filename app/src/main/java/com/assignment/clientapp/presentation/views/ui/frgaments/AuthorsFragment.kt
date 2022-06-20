@@ -1,5 +1,6 @@
 package com.assignment.clientapp.presentation.views.ui.frgaments
 
+import android.annotation.SuppressLint
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
@@ -85,8 +86,8 @@ class AuthorsFragment : Fragment() {
         }
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     private fun handleSuccessData(data: List<AuthorsDomainResponseItem>?) {
-        hideLoading()
         if (data.isNullOrEmpty()) {
             author_rv.visibility = View.GONE
             no_list_found_tv.visibility = View.VISIBLE
@@ -96,26 +97,6 @@ class AuthorsFragment : Fragment() {
             authorAdapter?.notifyDataSetChanged()
 
         }
-    }
-
-    private fun showLoading() {
-        progress_loading.visibility = View.VISIBLE
-        author_rv.visibility = View.INVISIBLE
-    }
-
-    private fun hideLoading() {
-        progress_loading.visibility = View.INVISIBLE
-    }
-
-
-    private fun showError() {
-        hideLoading()
-        author_rv.visibility = View.GONE
-        Toast.makeText(
-            requireContext(),
-            "Some Error Occurred, please try again later..",
-            Toast.LENGTH_LONG
-        ).show()
     }
 
     override fun onDestroyView() {
